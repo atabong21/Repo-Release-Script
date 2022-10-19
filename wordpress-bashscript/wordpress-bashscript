@@ -1,0 +1,94 @@
+#!/bin/bash
+# Bash Script to Install and Configure Wordpress
+# Installation of requirements
+# Update System
+echo "*********Updating OS**********"
+sudo yum update -y
+wait
+echo "******Your OS was successfully updated*******"
+# Insatallation of Apache Server
+echo "*******Installing Apache Server*******"
+sudo yum install -y httpd
+wait
+echo "******Apache was successfully Installed on your system*******"
+# Installation of PHP
+echo "Installing  PHP"
+sudo yum install -y Amazon-linux-extras
+wait
+echo "PHP was successfully installed"
+# Enabling of PHP7.4
+sudo amazon-linux-extras enable php7.4
+echo "PHP 7.4 was successfully enabled"
+# Cleaning Metadata
+echo "Clean Metadata"
+sudo yum clean metadata
+wait
+echo "Metadata was successfully Cleaned"
+# Installation of Libraries
+echo "Installation of Libraries"
+sudo yum install -y php php-{pear,cgi,common,curl,mbstring,gd,mysqlnd,gettext,bcmath,json,xml,fpm,intl,zip,imap}
+wait
+echo "Libraries were successfully Installed"
+# Installation of mysql
+echo "Installing mysql repo packages"
+sudo yum install -y https://repo.mysql.com//mysql80-community-release-el7-5.noarch.rpm
+wait
+echo "mysql was successfully installed"
+# Installing mysql server"
+echo "Installing mysql server"
+sudo yum install mysql-server -y
+wait
+echo "mysql server was successfully installed"
+# Installation Wget
+echo "Installing Wget"
+sudo yum install wget -y
+wait
+echo "Wget successfully installed"
+# Installation of wordpress
+echo "Changing Directory to var/www/html/"
+cd /var/www/html/
+echo "Downloading wordpress"
+sudo wget http://wordpress.org/latest.tar.gz
+wait
+echo "Extracting wordpress"
+sudo tar -xzf latest.tar.gz
+echo "Changing directory to wordpress"
+cd wordpress/
+# Move wordpress to document root
+echo "moving wordpress to document root"
+sudo mv wp-config-sample.php wp-config.php
+echo "wordpress was sucessfully installed"
+# Setting permissions to wordpress directories
+echo "changing ownership of apache to var/www"
+sudo chown -R apache /var/www
+echo "changing group permission of apache to var/www"
+sudo chgrp -R apache /var/www
+echo "Modifying permission of apache to var/www"
+sudo chmod 2775 /var/www
+# Set permissions on files and directories
+echo "setting permissions on files and directories"
+find /var/www -type d -exec sudo chmod 2775 {} \;
+find /var/www -type f -exec sudo chmod 0664 {} \;
+echo "Permissions were successfully changed"
+# Restart appache and mysqld
+echo "Restarting appache and mysqld"
+sudo systemctl restart httpd
+sudo systemctl restart mysqld
+echo "httpd and mysqld were successfully restarted"
+echo "Testing components"
+sudo systemctl status mysqld 
+sudo systemctl status httpd
+sudo php --version
+sudo yum install tree -y 
+wait
+sudo ls -la /var/www/html/wordpress
+wait
+sudo tree /var/www/html/
+echo "section completed successfully"
+
+
+
+
+
+
+
